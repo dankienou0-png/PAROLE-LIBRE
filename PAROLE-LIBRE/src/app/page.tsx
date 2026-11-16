@@ -6,7 +6,7 @@ export default function Home() {
   return <main>
     <nav className="nav wrap">
       <Link href="/" className="brand"><span className="brand-mark">PL</span><span>PAROLE <b>LIBRE</b></span></Link>
-      <Link className="nav-link" href="/suivi">Suivre un message <ArrowRight size={15}/></Link>
+      <div style={{ display: "flex", gap: 18, alignItems: "center" }}><Link className="nav-link" href="/connexion">Espace responsables <ArrowRight size={15}/></Link><Link className="nav-link" href="/suivi">Suivre un message <ArrowRight size={15}/></Link></div>
     </nav>
     <section className="hero wrap">
       <div className="hero-copy">
