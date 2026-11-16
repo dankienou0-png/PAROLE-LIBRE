@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { requireStaff } from "@/lib/staff-auth";
 import LogoutButton from "@/components/LogoutButton";
+import StaffMessageReplies from "@/components/StaffMessageReplies";
 
 export const dynamic = "force-dynamic";
 
@@ -18,6 +19,11 @@ export default async function StaffSpacePage() {
     .eq("recipient", recipient)
     .order("created_at", { ascending: false })
     .limit(100);
+
+  const messageIds = (messages ?? []).map((message) => message.id);
+  const { data: replies } = messageIds.length
+    ? await admin.from("replies").select("id,message_id,body,author_id,created_at").in("message_id", messageIds).order("created_at", { ascending: true })
+    : { data: [] };
 
   return <main className="simple-page">
     <nav className="nav wrap"><Link href="/" className="brand"><span className="brand-mark">PL</span><span>PAROLE <b>LIBRE</b></span></Link><LogoutButton /></nav>
@@ -38,6 +44,7 @@ export default async function StaffSpacePage() {
           <time>{new Date(message.created_at).toLocaleString("fr-FR")}</time>
         </div>
         <p style={{ whiteSpace: "pre-wrap", lineHeight: 1.7, fontSize: 14 }}>{message.body}</p>
+        <StaffMessageReplies messageId={message.id} initialReplies={(replies ?? []).filter((reply) => reply.message_id === message.id)} />
       </article>)}
     </section>
   </main>;
