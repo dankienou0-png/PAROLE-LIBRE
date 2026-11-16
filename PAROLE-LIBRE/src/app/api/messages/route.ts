@@ -28,8 +28,15 @@ export async function POST(request: NextRequest) {
     const trackingCode = randomBytes(18).toString("base64url").toUpperCase();
     const trackingHash = createHash("sha256").update(trackingCode).digest("hex");
     const supabase = getSupabase();
+    const { data: institution, error: institutionError } = await supabase
+      .from("institutions").select("id").eq("slug", "lta").single();
+    if (institutionError || !institution) {
+      return NextResponse.json({ error: "L'établissement n'est pas encore configuré." }, { status: 503 });
+    }
+
     const { error } = await supabase.from("messages").insert({
-      recipient, category, body: message, tracking_hash: trackingHash, status: "new"
+      institution_id: institution.id, recipient, category, body: message,
+      tracking_hash: trackingHash, status: "new"
     });
 
     if (error) {
