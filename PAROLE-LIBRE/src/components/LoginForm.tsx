@@ -2,14 +2,13 @@
 
 import { FormEvent, useState } from "react";
 import { createBrowserClient } from "@supabase/ssr";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
-export default function LoginForm() {
+export default function LoginForm({ initialError = "" }: { initialError?: string }) {
   const router = useRouter();
-  const params = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(params.get("error") === "acces" ? "Ce compte n'a pas d'accès responsable actif." : "");
+  const [error, setError] = useState(initialError);
   const [loading, setLoading] = useState(false);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
